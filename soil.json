@@ -57,8 +57,8 @@
     "soil_id": "MUGI-01",
     "name": "麦畑①",
     "location": "埼玉県秩父市太田",
-    "lat": 36.059892814765874,
-    "lng": 139.06913759614304,
+    "lat": 36.05928, 
+    "lng": 139.06893,
     "rank": "B",
     "summary": "粘土質で保水力の高い土壌",
     "one_line": "保水性が高く、稲がじっくりと育つ土壌です。",
@@ -69,7 +69,7 @@
       "safety": 4
     },
     "story": "この田んぼの土壌は有機物が豊富で、微生物が活発に活動しています。そのため稲の根が健全に育ち、養分をゆっくり吸収できます。その結果、甘みとコクのあるお米になります。",
-    "story_image": "soil_story2.png",
+    "story_image": "soil_story_MUGI_1.jpg",
     "analysis": {
       "pH": 6.5,
       "cn_ratio": 12.5,
@@ -96,7 +96,7 @@
       "safety": 4
     },
     "story": "この田んぼの土壌は有機物が豊富で、微生物が活発に活動しています。そのため稲の根が健全に育ち、養分をゆっくり吸収できます。その結果、甘みとコクのあるお米になります。",
-    "story_image": "soil_story2.png",
+    "story_image": "soil_story_HATAKE_1.jpg",
     "analysis": {
       "pH": 6.5,
       "cn_ratio": 12.5,
@@ -123,7 +123,7 @@
       "safety": 4
     },
     "story": "この田んぼの土壌は有機物が豊富で、微生物が活発に活動しています。そのため稲の根が健全に育ち、養分をゆっくり吸収できます。その結果、甘みとコクのあるお米になります。",
-    "story_image": "soil_story2.png",
+    "story_image": "soil_story_MUGI_2.jpg",
     "analysis": {
       "pH": 6.5,
       "cn_ratio": 12.5,
@@ -138,8 +138,8 @@
     "soil_id": "MUGI-03",
     "name": "麦畑③",
     "location": "埼玉県秩父市太田",
-    "lat": 36.059467826146964,
-    "lng": 139.0683973064447,
+    "lat": 36.05935, 
+    "lng": 139.06880,
     "rank": "B",
     "summary": "粘土質で保水力の高い土壌",
     "one_line": "保水性が高く、稲がじっくりと育つ土壌です。",
@@ -150,7 +150,7 @@
       "safety": 4
     },
     "story": "この田んぼの土壌は有機物が豊富で、微生物が活発に活動しています。そのため稲の根が健全に育ち、養分をゆっくり吸収できます。その結果、甘みとコクのあるお米になります。",
-    "story_image": "soil_story2.png",
+    "story_image": "soil_story_MUGI_3.jpg",
     "analysis": {
       "pH": 6.5,
       "cn_ratio": 12.5,
@@ -161,4 +161,3 @@
     "linked_rice": "RICE-OTA-2025"
   }
 ]
-
