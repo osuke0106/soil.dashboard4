@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>土壌診断マップ</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body { margin: 0; }
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([36.0554, 139.0675], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    fetch('soil.json')
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(soil => {
+          // 星の生成関数
+          const stars = (n) => '★'.repeat(n) + '☆'.repeat(5-n);
+
+         /* index.html 29行目付近からの markerColor 決定ロジックを以下に書き換え */
+
+          let markerColor;
+          
+          // 名前に「麦畑」が含まれている場合
+          if (soil.name.includes('麦畑')) {
+            markerColor = '#8b4513'; // 茶色 (SaddleBrown)
+          } 
+          // 名前に「畑」が含まれている場合（「麦畑」でないもの）
+          else if (soil.name.includes('畑')) {
+            markerColor = '#3e2723'; // 濃い茶色 (Dark Brown)
+          } 
+          // それ以外の既存IDの判定
+          else if (soil.soil_id === 'CHC-OTA-03') {
+            markerColor = '#ffaa00'; // オレンジ
+          } else if (soil.soil_id === 'CHC-OTA-04') {
+            markerColor = '#ffff00'; // 黄色
+          } else {
+            markerColor = '#cccccc'; // その他（グレー）
+          } 
+          
+          const popupContent = `
+            <strong>${soil.name}</strong><br>
+            <img src="${soil.story_image}" style="width:100%; max-width:180px; border-radius:4px; margin:8px 0;"><br>
+            評価：${soil.rank}<br>
+            ${soil.summary}<br><br>
+            🍚 おいしさ：${stars(soil.brand_scores.taste)}<br>
+            🌏 環境：${stars(soil.brand_scores.environment)}<br>
+            🛡 安全：${stars(soil.brand_scores.safety)}<br><br>
+            <a href="soil.html?id=${soil.soil_id}">詳細診断を見る</a>
+          `;
+          L.circleMarker([soil.lat, soil.lng], {
+            radius: 10,           // 半径（メートル）。ここを調整すると地図上での大きさが変わります
+            color: '#333',         // 縁取りの色（黒）
+            weight: 1.5,             // 縁取りの太さ
+            fillColor: markerColor,  // 中の色（オレンジ系）
+            fillOpacity: 1.0       // 透明度
+            })
+            .addTo(map)
+            .bindPopup(popupContent);
+        });
+      });
+  </script>
+</body>
+</html>

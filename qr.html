@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>このお米について</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: sans-serif; padding: 16px; line-height: 1.6; text-align: center; }
+    .badge {
+      display: inline-block;
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin: 4px;
+      font-weight: bold;
+    }
+    canvas { max-width: 100%; margin: 16px auto; }
+    .catch { font-size: 1.1em; font-weight: bold; margin-top: 12px; }
+    ul { text-align: left; display: inline-block; }
+    a { display: inline-block; margin-top: 20px; color: #4caf50; font-weight: bold; text-decoration: none; border-bottom: 2px solid #4caf50; }
+  </style>
+</head>
+<body>
+  <h2 id="productName"></h2>
+  
+  <div>
+    <span class="badge" style="background:#4caf50;">土壌診断済み</span>
+    <span class="badge" id="rank"></span>
+  </div>
+
+  <p class="catch" id="oneLine"></p>
+  
+  <canvas id="qrRadar"></canvas>
+  
+  <ul id="tasteList"></ul>
+  
+  <p>
+    <a id="detailLink">▶ 育った土壌の詳細を見る</a>
+  </p>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function rankColor(rank, alpha = 1) {
+      switch (rank) {
+        case "A": return `rgba(76, 175, 80, ${alpha})`;
+        case "B": return `rgba(255, 193, 7, ${alpha})`;
+        case "C": return `rgba(244, 67, 54, ${alpha})`;
+        default:  return `rgba(158, 158, 158, ${alpha})`;
+      }
+    }
+
+    const params = new URLSearchParams(location.search);
+    const soilId = params.get("id");
+
+    Promise.all([
+      fetch("soil.json").then(res => res.json()),
+      fetch("rice.json").then(res => res.json())
+    ]).then(([soils, riceList]) => {
+      const soil = soils.find(s => s.soil_id === soilId);
+      if (!soil) return;
+      const rice = riceList.find(r => r.product_id === soil.linked_rice);
+
+      // テキスト設定
+      document.getElementById("productName").textContent = rice ? `${rice.name}（${rice.harvest_year}年産）` : "このお米について";
+      
+      const rankBadge = document.getElementById("rank");
+      rankBadge.textContent = soil.rank + "ランク";
+      rankBadge.style.backgroundColor = rankColor(soil.rank);
+
+      document.getElementById("oneLine").textContent = "土壌診断にもとづき、自然の力を活かして育てたお米です。";
+
+      // 詳細リンク
+      document.getElementById("detailLink").href = `soil.html?id=${soil.soil_id}`;
+
+      // 簡易レーダーチャート
+      const ctx = document.getElementById("qrRadar");
+      const mainColor = rankColor(soil.rank, 1);
+      const fillColor = rankColor(soil.rank, 0.25);
+
+      new Chart(ctx, {
+        type: "radar",
+        data: {
+          labels: ["おいしさ", "土壌", "環境", "安心"],
+          datasets: [{
+            data: [
+              soil.brand_scores.taste,
+              soil.brand_scores.soil_health,
+              soil.brand_scores.environment,
+              soil.brand_scores.safety
+            ],
+            fill: true,
+            backgroundColor: fillColor,
+            borderColor: mainColor,
+            pointRadius: 2
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              min: 0, max: 5,
+              ticks: { display: false },
+              grid: { circular: true },
+              angleLines: { display: false }
+            }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      // 味の特徴リスト
+      if (rice) {
+        const ul = document.getElementById("tasteList");
+        rice.taste.forEach(t => {
+          const li = document.createElement("li");
+          li.textContent = t;
+          ul.appendChild(li);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

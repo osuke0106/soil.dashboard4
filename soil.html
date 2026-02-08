@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>土壌診断結果</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: sans-serif; line-height: 1.7; padding: 16px; max-width: 800px; margin: 0 auto; }
+    .badge {
+      display: inline-block;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-right: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .stars { color: #ff9800; }
+    details { margin-top: 12px; background: #f9f9f9; padding: 10px; border-radius: 8px; }
+    canvas { max-width: 100%; margin: 20px auto; display: block; }
+  </style>
+</head>
+<body>
+  <h1 id="fieldName"></h1>
+  <p id="location"></p>
+  
+  <div>
+    <span class="badge" id="rank"></span>
+    <span class="badge" style="background:#4caf50;">土壌診断済み</span>
+  </div>
+
+  <p id="oneLine" style="font-weight:bold; margin-top:1em;"></p>
+
+  <h2>🌱 ブランド評価</h2>
+  <canvas id="radarChart" width="400" height="400"></canvas>
+  
+  <ul>
+    <li>🍚 おいしさ：<span class="stars" id="taste"></span></li>
+    <li>🌱 土壌の健全性：<span class="stars" id="soilHealth"></span></li>
+    <li>🌏 環境配慮：<span class="stars" id="environment"></span></li>
+    <li>🛡 安全性：<span class="stars" id="safety"></span></li>
+  </ul>
+
+  <h2>📖 土壌ストーリー</h2>
+  <img id="storyImage" src="" style="max-width:100%; border-radius:8px; display:none; margin-bottom:10px;">
+  <p id="story"></p>
+
+  <details>
+    <summary>🔬 専門データを見る</summary>
+    <ul id="analysis"></ul>
+  </details>
+
+  <h2>🌾 この土壌で育ったお米</h2>
+  <ul id="rice"></ul>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // ランク別カラー判定関数
+    function rankColor(rank, alpha = 1) {
+      switch (rank) {
+        case "A": return `rgba(76, 175, 80, ${alpha})`;   // 緑
+        case "B": return `rgba(255, 193, 7, ${alpha})`;   // 黄
+        case "C": return `rgba(244, 67, 54, ${alpha})`;   // 赤
+        default:  return `rgba(158, 158, 158, ${alpha})`; // グレー
+      }
+    }
+
+    const params = new URLSearchParams(location.search);
+    const soilId = params.get("id");
+
+    Promise.all([
+      fetch("soil.json").then(res => res.json()),
+      fetch("rice.json").then(res => res.json())
+    ]).then(([soils, riceList]) => {
+      const soil = soils.find(s => s.soil_id === soilId);
+      if (!soil) return;
+
+      // テキスト情報の埋め込み
+      document.getElementById("fieldName").textContent = soil.name;
+      document.getElementById("location").textContent = soil.location;
+      document.getElementById("oneLine").textContent = soil.one_line;
+      document.getElementById("story").textContent = soil.story;
+      // ▼ 追加：写真があれば表示する処理
+      const storyImg = document.getElementById("storyImage");
+      if (soil.story_image) {
+        storyImg.src = soil.story_image;
+        storyImg.style.display = "block"; // 写真がある時だけ表示
+      } else {
+        storyImg.style.display = "none";
+      }
+
+      // ランクバッジの色設定
+      const rankBadge = document.getElementById("rank");
+      rankBadge.textContent = soil.rank + "ランク";
+      rankBadge.style.backgroundColor = rankColor(soil.rank);
+
+      // 星評価
+      const star = n => "★".repeat(n) + "☆".repeat(5 - n);
+      document.getElementById("taste").textContent = star(soil.brand_scores.taste);
+      document.getElementById("soilHealth").textContent = star(soil.brand_scores.soil_health);
+      document.getElementById("environment").textContent = star(soil.brand_scores.environment);
+      document.getElementById("safety").textContent = star(soil.brand_scores.safety);
+
+      // レーダーチャート描画
+      const ctx = document.getElementById("radarChart");
+      const mainColor = rankColor(soil.rank, 1);
+      const fillColor = rankColor(soil.rank, 0.25);
+
+      new Chart(ctx, {
+        type: "radar",
+        data: {
+          labels: ["おいしさ", "土壌の健全性", "環境配慮", "安全性"],
+          datasets: [{
+            label: "土壌診断評価",
+            data: [
+              soil.brand_scores.taste,
+              soil.brand_scores.soil_health,
+              soil.brand_scores.environment,
+              soil.brand_scores.safety
+            ],
+            fill: true,
+            backgroundColor: fillColor,
+            borderColor: mainColor,
+            pointBackgroundColor: mainColor
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              min: 0,
+              max: 5,
+              ticks: { display: false, stepSize: 1 },
+              pointLabels: { font: { size: 14 } }
+            }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      // 専門データリスト
+      const analysis = document.getElementById("analysis");
+      Object.entries(soil.analysis).forEach(([k, v]) => {
+        const li = document.createElement("li");
+        li.textContent = `${k}：${v}`;
+        analysis.appendChild(li);
+      });
+
+      // お米情報
+      const rice = riceList.find(r => r.product_id === soil.linked_rice);
+      if (rice) {
+        const ul = document.getElementById("rice");
+        rice.taste.forEach(t => {
+          const li = document.createElement("li");
+          li.textContent = t;
+          ul.appendChild(li);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
