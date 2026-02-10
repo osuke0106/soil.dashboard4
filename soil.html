@@ -101,6 +101,28 @@
         storyImg.style.display = "none";
       }
 
+      /* === あなたが提示したコードのすぐ下に貼り付け === */
+
+      // 専門データ用画像（2枚）の処理を追加
+      const anaImg1 = document.getElementById("analysisImg1");
+      const anaImg2 = document.getElementById("analysisImg2");
+
+      // 1枚目（微生物多様性）
+      if (soil.analysis_image1) {
+        anaImg1.src = soil.analysis_image1;
+        anaImg1.style.display = "block";
+      } else {
+        anaImg1.style.display = "none";
+      }
+
+      // 2枚目（化学性分析）
+      if (soil.analysis_image2) {
+        anaImg2.src = soil.analysis_image2;
+        anaImg2.style.display = "block";
+      } else {
+        anaImg2.style.display = "none";
+      }
+
       // ランクバッジの色設定
       const rankBadge = document.getElementById("rank");
       rankBadge.textContent = soil.rank + "ランク";
@@ -172,4 +194,5 @@
 </body>
 
 </html>
+
 
