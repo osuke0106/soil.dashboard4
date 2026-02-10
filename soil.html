@@ -45,10 +45,22 @@
   <img id="storyImage" src="" style="max-width:100%; border-radius:8px; display:none; margin-bottom:10px;">
   <p id="story"></p>
 
-  <details>
-    <summary>🔬 専門データを見る</summary>
-    <ul id="analysis"></ul>
-  </details>
+ <details>
+  <summary>🔬 専門データを見る</summary>
+  
+  <div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0;">
+    <div style="flex: 1; min-width: 250px;">
+      <p style="font-size: 12px; font-weight: bold; color: #666; margin-bottom: 5px;">【生物性】BIOTREX報告書</p>
+      <img id="analysisImg1" src="" style="width: 100%; border-radius: 4px; border: 1px solid #ddd; display: none;">
+    </div>
+    <div style="flex: 1; min-width: 250px;">
+      <p style="font-size: 12px; font-weight: bold; color: #666; margin-bottom: 5px;">【化学性】分析結果報告書</p>
+      <img id="analysisImg2" src="" style="width: 100%; border-radius: 4px; border: 1px solid #ddd; display: none;">
+    </div>
+  </div>
+
+  <ul id="analysis" style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;"></ul>
+</details>
 
   <h2>🌾 農産物</h2>
   <ul id="rice"></ul>
@@ -160,3 +172,4 @@
 </body>
 
 </html>
+
