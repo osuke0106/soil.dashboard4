@@ -16,8 +16,8 @@
     },
     "story": "この田んぼの土壌は有機物が豊富で、微生物が活発に活動しています。そのため稲の根が健全に育ち、養分をゆっくり吸収できます。その結果、甘みとコクのあるお米になります。",
     "story_image": "soil_story.png",
-    "analysis_image1": "analysis_A_bio.jpg",
-    "analysis_image2": "analysis_A_chem.jpg",
+    "analysis_image1": "analysis_B_bio.jpg",
+    "analysis_image2": "analysis_B_chem.jpg",
     "analysis": {
       "pH": 6.5,
       "cn_ratio": 12.5,
@@ -45,8 +45,8 @@
     },
     "story": "この田んぼの土壌は有機物が豊富で、微生物が活発に活動しています。そのため稲の根が健全に育ち、養分をゆっくり吸収できます。その結果、甘みとコクのあるお米になります。",
     "story_image": "soil_story2.png",
-    "analysis_image1": "analysis_B_bio.jpg",
-    "analysis_image2": "analysis_B_chem.jpg",
+    "analysis_image1": "analysis_A_bio.jpg",
+    "analysis_image2": "analysis_A_chem.jpg",
     "analysis": {
       "pH": 6.3,
       "cn_ratio": 12.5,
@@ -165,4 +165,5 @@
     "linked_rice": "RICE-OTA-2025"
   }
 ]
+
 
